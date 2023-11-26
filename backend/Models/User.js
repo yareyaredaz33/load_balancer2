@@ -18,4 +18,6 @@ const User = db.define('User', {
 // Assuming you have a Roles table defined
 User.belongsToMany(Role, { through: 'UserRoles' });
 
+
+
 module.exports = User;
