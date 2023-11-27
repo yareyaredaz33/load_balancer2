@@ -1,16 +1,3 @@
-/*class authController{
-    async registration(req,res){
-
-    }
-    async login(req,res){
-
-    }
-    async getUsers(req,res){
-
-    }
-}*/
-
-
 
 
 const User = require('./models/User')
@@ -60,11 +47,11 @@ class authController {
             });
 
             if (!user) {
-                return res.status(400).json({message: `Пользователь ${username} не найден`})
+                return res.status(400).json({message: `There's no user ${username}`})
             }
             const validPassword = bcrypt.compareSync(password, user.password)
             if (!validPassword) {
-                return res.status(400).json({message: `Введен неверный пароль`})
+                return res.status(400).json({message: `Wrong password`})
             }
             const token = generateAccessToken(user._id, user.roles)
             return res.json({token})

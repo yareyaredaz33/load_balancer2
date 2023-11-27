@@ -1,15 +1,25 @@
 // index.js
 const express = require('express');
 const authRouter = require('./authRouter');
+const cors = require('cors');
 
 const db = require('./Config/database'); // Update the path to match your project structure
 
-const PORT = process.env.PORT || 5000;
 const app = express();
+const corsOptions = {
+    origin: 'http://localhost:3000',
+    optionsSuccessStatus: 200,
+    credentials: true,
+    exposedHeaders: ['Content-Length', 'Authorization'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: ['Content-Type', 'Authorization'],
+};
 
 app.use(express.json());
-app.use(`/auth`, authRouter);
 
+app.use(cors(corsOptions));
+app.use(`/auth`, authRouter);
+const PORT = process.env.PORT || 5000;
 const startServer = async () => {
     try {
         // Check the connection to the database
