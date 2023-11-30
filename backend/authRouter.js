@@ -12,10 +12,9 @@ router.post('/registration', [
     check('password', "Pass should be between 4 and 10 chars").isLength({min:4, max:10})
 ], controller.registration)
 router.post('/login', controller.login)
-router.get('/users', roleMiddleware(["ADMIN"]),  controller.getUsers);
-router.get('/check-authorization', authMiddleware, (req, res) => {
-    res.json({ message: 'User is authorized', user: req.user });
-});
+router.get('/getUsers',  controller.getUsers);
+router.get('/check-authorization', controller.checkAuthorization);
 router.post('/calculatePi', calcController.calculatePi)
+router.get('/calculationHistory', calcController.getHistory)
 
 module.exports = router

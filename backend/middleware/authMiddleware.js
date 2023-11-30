@@ -7,16 +7,19 @@ module.exports = function (req, res, next) {
     }
 
     try {
-        const authorizationHeader = req.headers.authorization;
+
+        const authorizationHeader = req.headers["authorization"];
 
         if (!authorizationHeader) {
-            return res.status(403).json({ message: 'User not authorized, no token' });
+            return res.status(403).json({ message: 'User not authorized, no token, no header' });
         }
 
-        const token = authorizationHeader.split(' ')[1];
+      /*  const token = authorizationHeader.split(' ')[1];*/
+        const token = authorizationHeader;
 
+        /*const token = localStorage.getItem('token');*/
         if (!token) {
-            return res.status(403).json({ message: 'User not authorized, no token' });
+            return res.status(403).json({ message: 'User not authorized, NO token' });
         }
 
         const decodedData = jwt.verify(token, secret);

@@ -81,36 +81,68 @@ class authController {
         try {
             const users = await User.findAll();
 
-            // Sending the list of users as a JSON response
-            res.json(users);
+            // Check if 'users' is undefined before iterating
+            if (users) {
+                // Sending the list of users as a JSON response
+                res.json(users);
+            } else {
+                // Handle the case where 'users' is undefined
+                res.status(404).json({ error: 'No users found' });
+            }
         } catch (e) {
-            console.log(e)
-        }
-    }
-   /* async addCalculationHistory(req, res) {
-        try {
-            // Sample data for demonstration
-            const sampleResult = '3.14159265358979323846'; // Replace with your actual result
-            const sampleTime = new Date();
-            const sampleIsFinished = true; // Replace with your actual value
-
-            // Assuming you have a user with ID 1 for demonstration
-            const userId = 5;
-
-            // Create a new calculation history entry
-            const newCalculation = await CalculationHistory.create({
-                result: sampleResult,
-                time: sampleTime,
-                isFinished: sampleIsFinished,
-                user_id: userId, // Set the user_id foreign key
-            });
-
-            res.status(201).json(newCalculation);
-        } catch (error) {
-            console.error('Error adding calculation history:', error);
+            console.log(e);
+            // Handle other errors if necessary
             res.status(500).json({ error: 'Internal Server Error' });
         }
-    };*/
+    }
+    async checkAuthorization(req, res, next) {
+        try {
+            const authorizationHeader = req.headers;
+            console.log(authorizationHeader);
+            if (!authorizationHeader) {
+                return res.status(403).json({ message: 'User not authorized, no token' });
+            }
+
+            const token = authorizationHeader.split(' ')[1];
+
+            if (!token) {
+                return res.status(403).json({ message: 'User not authorized, NO token' });
+            }
+
+            const decodedData = jwt.verify(token, secret);
+            req.user = decodedData;
+
+            next();
+        } catch (e) {
+            console.error(e);
+            return res.status(403).json({ message: 'User not authorized' });
+        }
+    }
+
+    /* async addCalculationHistory(req, res) {
+         try {
+             // Sample data for demonstration
+             const sampleResult = '3.14159265358979323846'; // Replace with your actual result
+             const sampleTime = new Date();
+             const sampleIsFinished = true; // Replace with your actual value
+
+             // Assuming you have a user with ID 1 for demonstration
+             const userId = 5;
+
+             // Create a new calculation history entry
+             const newCalculation = await CalculationHistory.create({
+                 result: sampleResult,
+                 time: sampleTime,
+                 isFinished: sampleIsFinished,
+                 user_id: userId, // Set the user_id foreign key
+             });
+
+             res.status(201).json(newCalculation);
+         } catch (error) {
+             console.error('Error adding calculation history:', error);
+             res.status(500).json({ error: 'Internal Server Error' });
+         }
+     };*/
 
 
 

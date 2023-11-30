@@ -1,0 +1,16 @@
+/* CalculationHistoryList.css */
+.history-container {
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    border: 1px solid #ccc;
+    margin: 10px 0;
+    padding: 10px;
+}

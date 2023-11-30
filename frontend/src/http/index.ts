@@ -7,7 +7,7 @@ const $api = axios.create({
     baseURL: API_URL
 })
 
-$api.interceptors.response.use((config) => {
+/*$api.interceptors.response.use((config) => {
     return config;
 },async (error) => {
     const originalRequest = error.config;
@@ -22,10 +22,19 @@ $api.interceptors.response.use((config) => {
         }
     }
     throw error;
-})
+})*/
 $api.interceptors.request.use((config) => {
-    config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
+
+
+    const token = localStorage.getItem('token');
+
+    if (token) {
+        console.log("token set")
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+
     return config;
-})
+});
+
 
 export default $api;
