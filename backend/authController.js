@@ -1,11 +1,13 @@
 
-
 const User = require('./models/User')
 const Role = require('./models/Role')
+const CalculationHistory = require('./Models/CalculationHistory');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator')
 const {secret} = require("./Config/config")
+
+
 
 
 const generateAccessToken = (id, roles) => {
@@ -15,6 +17,7 @@ const generateAccessToken = (id, roles) => {
     }
     return jwt.sign(payload, secret, {expiresIn: "24h"} )
 }
+
 
 class authController {
     async registration(req, res) {
@@ -32,7 +35,14 @@ class authController {
             const userRole = await Role.findOne({value: "USER"})
             const user = new User({username, password: hashPassword, roles: [userRole.value]})
             await user.save()
-            return res.json({message: "Registration complete"})
+            const token = generateAccessToken(user._id, user.roles)
+            return res.json({
+                token,
+                user: {
+                    username: user.username,
+                    id: user.id
+                }
+            });
         } catch (e) {
             console.log(e)
             res.status(400).json({message: 'Registration error'})
@@ -54,7 +64,13 @@ class authController {
                 return res.status(400).json({message: `Wrong password`})
             }
             const token = generateAccessToken(user._id, user.roles)
-            return res.json({token})
+            return res.json({
+                token,
+                user: {
+                    username: user.username,
+                    id: user.id
+                }
+            });
         } catch (e) {
             console.log(e)
             res.status(400).json({message: 'Login error'})
@@ -71,6 +87,33 @@ class authController {
             console.log(e)
         }
     }
+   /* async addCalculationHistory(req, res) {
+        try {
+            // Sample data for demonstration
+            const sampleResult = '3.14159265358979323846'; // Replace with your actual result
+            const sampleTime = new Date();
+            const sampleIsFinished = true; // Replace with your actual value
+
+            // Assuming you have a user with ID 1 for demonstration
+            const userId = 5;
+
+            // Create a new calculation history entry
+            const newCalculation = await CalculationHistory.create({
+                result: sampleResult,
+                time: sampleTime,
+                isFinished: sampleIsFinished,
+                user_id: userId, // Set the user_id foreign key
+            });
+
+            res.status(201).json(newCalculation);
+        } catch (error) {
+            console.error('Error adding calculation history:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    };*/
+
+
+
 }
 
 /*class authController{

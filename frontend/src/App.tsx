@@ -1,16 +1,64 @@
-import React, {FC, useContext, useEffect, useState} from 'react';
-import LoginForm from "./components/LoginForm";
-import {Context} from "./index";
-import {observer} from "mobx-react-lite";
-import {IUser} from "./models/IUser";
-import UserService from "./services/UserService";
+import React, { FC, useContext, useEffect, useState } from 'react';
+import LoginForm from './components/LoginForm';
+import CalcPi from './components/NumbersOfPiCalcForm'; // Import the CalcPi component
+import { Context } from './index';
+import { observer } from 'mobx-react-lite';
+import { IUser } from './models/IUser';
+import UserService from './services/UserService';
+import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Navbar from "./components/Navbar";
 
 const App: FC = () => {
-   return(
-       <div>
-           <LoginForm/>
-       </div>
-   )
+    const { store } = useContext(Context);
+    const [users, setUsers] = useState<IUser[]>([]);
+
+    useEffect(() => {
+        if (localStorage.getItem('token')) {
+            store.checkAuth();
+        }
+    }, []);
+
+    useEffect(() => {
+        if (store.isAuth) {
+            getUsers();
+        }
+    }, [store.isAuth]);
+
+    async function getUsers() {
+        try {
+            const response = await UserService.fetchUsers();
+            setUsers(response.data);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    if (!store.isAuth) {
+        return (
+
+            <div className="container">
+
+                <LoginForm />
+
+
+            </div>
+        );
+    }
+
+    return (
+        <div className="container">
+            <Navbar/>
+            <div className="container">
+            <h1>{`WELCOME LIL ${store.user.username} :3`}</h1>
+
+
+            </div>
+            <CalcPi />
+            <CalcPi />
+            <CalcPi />
+        </div>
+    );
 };
 
 export default observer(App);

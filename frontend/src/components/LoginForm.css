@@ -1,0 +1,40 @@
+/* LoginForm styles */
+
+.input-container {
+    margin-bottom: 15px;
+}
+
+.input-container input {
+    width: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.input-container input:focus {
+    border-color: #735987;
+}
+
+.button-container {
+    display: flex;
+    gap: 10px;
+}
+
+.button-container button {
+    flex: 1;
+    background-color: #9685a1;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button-container button:hover {
+    background-color: #735987;
+}

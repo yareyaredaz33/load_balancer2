@@ -1,0 +1,43 @@
+/* App container styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Welcome and Logout styles */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logout-button {
+    background-color: #9685a1;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.logout-button:hover {
+    background-color: #735987;
+}
+
+/* User list styles */
+.user-list-container {
+    margin-top: 20px;
+}
+
+.user-item {
+    background-color: #f2f2f2;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
