@@ -1,16 +1,56 @@
-/* CalculationHistoryList.css */
+/* CalculationHistoryList styles */
+
 .history-container {
-    max-width: 600px;
+    max-width: 800px;
     margin: 20px auto;
+    border: 1px solid #ccc;
+    border-radius: 15px; /* Make it more rounded */
+    padding: 20px;
 }
 
-ul {
-    list-style-type: none;
+.history-container h2 {
+    text-align: center;
+    color: #735987;
+}
+
+.history-container ul {
+    list-style: none;
     padding: 0;
 }
 
-li {
+.history-container li {
+    margin-bottom: 20px;
+    padding: 20px;
     border: 1px solid #ccc;
-    margin: 10px 0;
-    padding: 10px;
+    border-radius: 15px; /* Make it more rounded */
+    transition: background-color 0.3s;
+}
+
+.history-container li:hover {
+    background-color: #d8d0e4; /* Light purple on hover */
+}
+
+.history-container li p {
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.history-container li p.result {
+    word-break: break-all;
+}
+/* HistoryComponent.css */
+
+.update-button {
+    background-color: #735987; /* Purple color */
+    color: white;
+    padding: 10px 15px; /* Adjust padding as needed */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-bottom: 10px; /* Add margin to separate the button from the list */
+}
+
+.update-button:hover {
+    background-color: #9685a1; /* Lighter purple on hover */
 }

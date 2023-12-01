@@ -1,4 +1,3 @@
-
 const User = require('../models/User')
 const Role = require('../models/Role')
 const CalculationHistory = require('../Models/CalculationHistory');
@@ -28,50 +27,53 @@ class CalculationController {
 
     async calculatePi(req, res) {
         try {
-            const numberOfDigits = req.query.numberOfDigits || 5;
+            const numberOfDigits = req.query.numberOfDigits || 5; // Default to 5 if not provided
+            const startTime = performance.now();
 
-            // Create a new worker
-            const piWorker = new Worker('./piCalculationWorker.js');
+            const piGenerator = generateDigitsOfPi(Number(numberOfDigits));
+            let pi = '3.'; // Initial value of pi
 
-            // Set up the message listener to handle the result from the worker
-            piWorker.onmessage = (event) => {
-                const { content: pi } = event.data;
+            // Skip the integer part
+            piGenerator.next();
 
-                // Stop the worker
-                piWorker.terminate();
+            for (let i = 0; i < numberOfDigits; i++) {
+                pi += piGenerator.next().value;
 
-                // Save the calculation history and send the result back
-                // (Note: You need to implement the database save logic)
-                const userId = 5;
-                res.status(200).json({ content: pi });
+            }
 
-                // Save the calculation history to the database
-                CalculationHistory.create({
-                    result: pi.toString(),
-                    time: executionTime,
-                    isFinished: true,
-                    user_id: userId,
-                });
-            };
+            // Stop the timer
+            const endTime = performance.now();
 
-            // Start the worker and pass the required data
-            piWorker.postMessage({ numberOfDigits });
+            const executionTime = endTime - startTime;
+
+            // Save the calculation history to the database
+            const userId = 5; // Replace with the actual user ID
+            await CalculationHistory.create({
+                result: pi.toString(),
+                time: executionTime,
+                isFinished: true,
+                user_id: userId,
+            });
+
+            // Send the result back
+            res.status(200).json({ content: pi});
         } catch (error) {
             console.error('Error calculating Pi:', error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
+
     }
+
     async getHistory(req, res) {
         try {
             // Fetch calculation history from the database
             const history = await CalculationHistory.findAll();
-            res.status(200).json({ history });
+            res.status(200).json( history );
         } catch (error) {
             console.error('Error fetching calculation history:', error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
-
 
     /*async saveCalculationHistory(result, time, isFinished, userId) {
         try {
@@ -93,16 +95,12 @@ class CalculationController {
             Big.DP = numberOfDigits; // Set precision
             const a = Big(1).div(5);
             const b = Big(1).div(239);
-
             let pi = Big(0);
-
             for (let i = 0; i < numberOfDigits; i++) {
                 const term1 = a.div(2 * i + 1);
                 const term2 = b.div(2 * i + 1);
-
                 pi = pi.plus(term1.minus(term2));
             }
-
             pi = pi.times(4);
             return pi;
         } catch (error) {

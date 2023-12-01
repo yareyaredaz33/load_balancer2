@@ -8,6 +8,7 @@ import UserService from './services/UserService';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from "./components/Navbar";
+import CalculationHistoryList from "./components/HistoryComponent";
 
 const App: FC = () => {
     const { store } = useContext(Context);
@@ -57,6 +58,7 @@ const App: FC = () => {
             <CalcPi />
             <CalcPi />
             <CalcPi />
+            <CalculationHistoryList/>
         </div>
     );
 };

@@ -30,7 +30,8 @@ $api.interceptors.request.use((config) => {
 
     if (token) {
         console.log("token set")
-        config.headers.Authorization = `Bearer ${token}`;
+        config.headers['Authorization'] = `Bearer ${token}`;
+        console.log(config.headers['Authorization'])
     }
 
     return config;

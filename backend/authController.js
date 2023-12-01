@@ -97,13 +97,15 @@ class authController {
     }
     async checkAuthorization(req, res, next) {
         try {
-            const authorizationHeader = req.headers;
-            console.log(authorizationHeader);
+            const authorizationHeader = req.headers['authorization'];
+            console.log('Authorization Header:', authorizationHeader);
+
             if (!authorizationHeader) {
                 return res.status(403).json({ message: 'User not authorized, no token' });
             }
 
             const token = authorizationHeader.split(' ')[1];
+            console.log('token:', token);
 
             if (!token) {
                 return res.status(403).json({ message: 'User not authorized, NO token' });
@@ -111,6 +113,7 @@ class authController {
 
             const decodedData = jwt.verify(token, secret);
             req.user = decodedData;
+            res.json('hello');
 
             next();
         } catch (e) {

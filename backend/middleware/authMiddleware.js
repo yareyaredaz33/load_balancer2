@@ -8,7 +8,7 @@ module.exports = function (req, res, next) {
 
     try {
 
-        const authorizationHeader = req.headers["authorization"];
+        const authorizationHeader = req.headers["Authorization"];
 
         if (!authorizationHeader) {
             return res.status(403).json({ message: 'User not authorized, no token, no header' });
@@ -27,6 +27,6 @@ module.exports = function (req, res, next) {
         next();
     } catch (e) {
         console.error(e);
-        return res.status(403).json({ message: 'User not authorized' });
+        return res.status(403).json({ message: req.headers["Authorization"]});
     }
 };
