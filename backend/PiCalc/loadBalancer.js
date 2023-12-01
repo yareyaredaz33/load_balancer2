@@ -25,3 +25,4 @@ const loadBalancer = new LoadBalancer(servers);
 for (let i = 1; i <= 10; i++) {
     loadBalancer.handleRequest(`Request ${i}`);
 }
+module.exports = LoadBalancer;

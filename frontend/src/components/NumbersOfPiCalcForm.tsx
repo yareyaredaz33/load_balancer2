@@ -14,6 +14,7 @@ const CalcPi: FC = () => {
             const response = await CalcService.calculatePi(digits);
             const newCalculation = response.data; // Access the response data directly
             console.log('Calculation received from the backend:', newCalculation);
+
             // Display the result in your frontend
             setResult(newCalculation.content); // Assuming 'content' is the property you want to display
         } catch (error) {
