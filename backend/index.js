@@ -69,10 +69,7 @@ app.get('/sse', (req, res) => {
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
 
-    // Send periodic updates to the client
-    // const intervalId = setInterval(() => {
-    //     res.write(`data: ${JSON.stringify({ message: 'Update from server' })}\n\n`);
-    // }, 1000);
+
 
     // Handle client disconnect
     req.on('close', () => {

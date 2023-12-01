@@ -9,39 +9,62 @@ const CalcPi: FC = () => {
     const [result, setResult] = useState<string>('');
     const { store } = useContext(Context);
     const [progressUpdate, setProgressUpdate] = useState<string>('');
-    const calculatePi = async () => {
-        try {
-            const response = await CalcService.calculatePi(digits);
-            const newCalculation = response.data; // Access the response data directly
-            console.log('Calculation received from the backend:', newCalculation);
 
-            // Display the result in your frontend
-            setResult(newCalculation.content); // Assuming 'content' is the property you want to display
-        } catch (error) {
-            console.error('Error fetching calculation history:', error);
-        }
-    };
     useEffect(() => {
-        // Establish SSE connection when the component mounts
         const eventSource = new EventSource('http://localhost:5000/sse');
 
         eventSource.addEventListener('message', (event) => {
             const data = JSON.parse(event.data);
-            console.log('Received SSE message:', data.message);
 
-            // Handle the progress update as needed
-            setProgressUpdate(data.message);
+            switch (data.event) {
+                case 'progress':
+                    // Handle progress update
+                    const progressMessage = `Calculation ${data.calculationId}: ${data.percents}% complete`;
+                    console.log(progressMessage);
+                    setProgressUpdate("progressMessage");
+                    break;
+
+                case 'complete':
+                    // Handle completion update
+                    const resultMessage = `Calculation ${data.calculationId} completed. Result: ${data.result}`;
+                    console.log(resultMessage);
+                    setResult(resultMessage);
+                    break;
+
+                case 'error':
+                    // Handle error update
+                    const errorMessage = `Calculation ${data.calculationId} error: ${data.error}`;
+                    console.error(errorMessage);
+                    setResult(errorMessage);
+                    break;
+
+                default:
+                    console.warn('Unknown SSE message event:', data.event);
+            }
         });
 
         eventSource.addEventListener('error', (error) => {
             console.error('SSE Error:', error);
         });
 
-        // Clean up the SSE connection when the component unmounts
         return () => {
             eventSource.close();
         };
     }, []);
+    const calculatePi = async () => {
+        try {
+            const response = await CalcService.calculatePi(digits);
+            const newCalculation = response.data; // Access the response data directly
+            console.log('Calculation received from the backend:', newCalculation);
+            const text = JSON.parse(newCalculation)
+
+
+            // Display the result in your frontend
+            setResult("i love rats"); // Assuming 'content' is the property you want to display
+        } catch (error) {
+            console.error('Error fetching calculation history:', error);
+        }
+    };
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         await calculatePi();
@@ -68,6 +91,7 @@ const CalcPi: FC = () => {
             {progressUpdate && (
                 <div className="progress-container">
                     <h3>Progress Update:</h3>
+                    <p>{progressUpdate}</p>
                     <p>{progressUpdate}</p>
                 </div>
             )}

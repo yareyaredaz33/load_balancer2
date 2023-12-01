@@ -4,7 +4,7 @@ const path = require('path');
 class CalculationService {
     constructor() {
         this.workers = new Map();
-        this.currentId = 1;
+        this.currentId = 0;
         this.maxWorkers = 3;
     }
 

@@ -19,17 +19,40 @@ class CalculationController {
 
         try {
             console.log('Inside calculatePi:', this); // Log the state of 'this' here
+
             const result = this.calculationService.calculatePi(numberOfDigits,  (progressData) => {
-                // Log the structure of progressData
-                console.log('Received progress data:', JSON.stringify(progressData, null, 2));
+                console.log(`Calculation ${progressData.id}: ${progressData.percents}% complete`);
 
-                // Handle progress updates here
-                console.log('Progress:', progressData);
+                // Send progress update to the client using SSE
+                res.write(`event: progress\ndata: ${JSON.stringify({
+                    calculationId: progressData.id,
+                    percents: progressData.percents,
+                })}\n\n`);
+            });
 
-            })
+            result.then((result) => {
+                console.log(`Calculation ${result.id} completed. Result: ${result.value}`);
 
-            return res.status(200).json({ result });
+                // Send completion update to the client using SSE
+                res.write(`event: complete\ndata: ${JSON.stringify({
+                    calculationId: result.id,
+                    result: result.value,
+                })}\n\n`);
 
+                // End the SSE connection after sending the complete event
+                res.end();
+            }).catch((error) => {
+                console.error('Calculation error:', error);
+
+                // Send error update to the client using SSE
+                res.write(`event: error\ndata: ${JSON.stringify({
+                    
+                    error: 'Calculation error',
+                })}\n\n`);
+
+                // End the SSE connection after sending the error event
+                res.end();
+            });
         } catch (error) {
             console.error('Error calculating Pi:', error);
             return res.status(500).json({ error: 'Internal Server Error' });
