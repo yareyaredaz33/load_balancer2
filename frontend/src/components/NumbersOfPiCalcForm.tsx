@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState } from 'react';
+import React, {FC, useContext, useEffect, useState} from 'react';
 import { Context } from '../index';
 import { observer } from 'mobx-react-lite';
 import './NumbersOfPiCalcForm.css';
@@ -8,7 +8,7 @@ const CalcPi: FC = () => {
     const [digits, setDigits] = useState<number>(0);
     const [result, setResult] = useState<string>('');
     const { store } = useContext(Context);
-
+    const [progressUpdate, setProgressUpdate] = useState<string>('');
     const calculatePi = async () => {
         try {
             const response = await CalcService.calculatePi(digits);
@@ -21,6 +21,27 @@ const CalcPi: FC = () => {
             console.error('Error fetching calculation history:', error);
         }
     };
+    useEffect(() => {
+        // Establish SSE connection when the component mounts
+        const eventSource = new EventSource('http://localhost:5000/sse');
+
+        eventSource.addEventListener('message', (event) => {
+            const data = JSON.parse(event.data);
+            console.log('Received SSE message:', data.message);
+
+            // Handle the progress update as needed
+            setProgressUpdate(data.message);
+        });
+
+        eventSource.addEventListener('error', (error) => {
+            console.error('SSE Error:', error);
+        });
+
+        // Clean up the SSE connection when the component unmounts
+        return () => {
+            eventSource.close();
+        };
+    }, []);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         await calculatePi();
@@ -44,7 +65,12 @@ const CalcPi: FC = () => {
                     <button type="submit">Calculate Pi</button>
                 </div>
             </form>
-
+            {progressUpdate && (
+                <div className="progress-container">
+                    <h3>Progress Update:</h3>
+                    <p>{progressUpdate}</p>
+                </div>
+            )}
             {result && (
                 <div className="result-container">
                     <h3>Result:</h3>

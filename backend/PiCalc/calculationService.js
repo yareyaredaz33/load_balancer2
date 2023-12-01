@@ -30,6 +30,7 @@ class CalculationService {
             });
 
             worker.on('error', () => {
+                console.error('Worker error:');
                 this.workers.delete(id);
                 reject();
             });
