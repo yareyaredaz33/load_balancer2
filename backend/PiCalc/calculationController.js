@@ -1,5 +1,7 @@
 const CalculationService = require('../PiCalc/calculationService');
 const CalculationHistory = require("../Models/CalculationHistory");
+const jwt = require("jsonwebtoken");
+const {secret} = require("../Config/config");
 
 class CalculationController {
     constructor() {
@@ -18,39 +20,49 @@ class CalculationController {
         console.log('this.item:', this.calculationService);
 
         try {
-            console.log('Inside calculatePi:', this); // Log the state of 'this' here
+            console.log('Inside calculatePi:', this);
 
             const result = this.calculationService.calculatePi(numberOfDigits,  (progressData) => {
-                console.log(`Calculation ${progressData.id}: ${progressData.percents}% complete`);
+                console.log(progressData);
 
-                // Send progress update to the client using SSE
                 res.write(`event: progress\ndata: ${JSON.stringify({
                     calculationId: progressData.id,
                     percents: progressData.percents,
+                    currentValue: progressData.value,
                 })}\n\n`);
             });
 
-            result.then((result) => {
+            result.then(async (result) => {
+                console.log
                 console.log(`Calculation ${result.id} completed. Result: ${result.value}`);
 
-                // Send completion update to the client using SSE
+
                 res.write(`event: complete\ndata: ${JSON.stringify({
                     calculationId: result.id,
                     result: result.value,
                 })}\n\n`);
 
-                // End the SSE connection after sending the complete event
+                try {
+                    const calculationHistory = new CalculationHistory({
+                        result: result.value,
+                        time: result.duration,
+                        isFinished: true,
+                        user_id: 5
+                    })
+                    await calculationHistory.save()
+                } catch (e) {
+                    console.log(e)
+                }
+
                 res.end();
             }).catch((error) => {
                 console.error('Calculation error:', error);
 
-                // Send error update to the client using SSE
                 res.write(`event: error\ndata: ${JSON.stringify({
-                    
+
                     error: 'Calculation error',
                 })}\n\n`);
 
-                // End the SSE connection after sending the error event
                 res.end();
             });
         } catch (error) {

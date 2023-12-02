@@ -33,16 +33,9 @@ class authController {
             }
             const hashPassword = bcrypt.hashSync(password, 7);
             const userRole = await Role.findOne({value: "USER"})
-            const user = new User({username, password: hashPassword, roles: [userRole.value]})
+            const user = new User({username, password: hashPassword, roles: [userRole?.value]})
             await user.save()
-            const token = generateAccessToken(user._id, user.roles)
-            return res.json({
-                token,
-                user: {
-                    username: user.username,
-                    id: user.id
-                }
-            });
+            return res.sendStatus(204);
         } catch (e) {
             console.log(e)
             res.status(400).json({message: 'Registration error'})
@@ -114,8 +107,6 @@ class authController {
             const decodedData = jwt.verify(token, secret);
             req.user = decodedData;
             res.json('hello');
-
-            next();
         } catch (e) {
             console.error(e);
             return res.status(403).json({ message: 'User not authorized' });

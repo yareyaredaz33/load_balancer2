@@ -42,7 +42,7 @@ class CalculationService {
         });
     }
 
-     cancelCalculation(id) {
+    cancelCalculation(id) {
         const worker = this.workers.get(id);
         if (worker) {
             worker.postMessage('cancel');

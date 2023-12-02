@@ -52,33 +52,13 @@ const cors = require('cors');
 const db = require('./Config/database'); // Update the path to match your project structure
 
 const app = express();
-const corsOptions = {
-    origin: 'http://localhost:3000',
-    optionsSuccessStatus: 200,
-    credentials: true,
-    exposedHeaders: ['Content-Length', 'Authorization'],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE, OPTIONS',
-    allowedHeaders: ['Content-Type', 'Authorization'],
-};
-
+app.use(cors({
+    origin:'http://localhost:3000'
+}))
 app.use(express.json());
-app.use(cors(corsOptions));
 app.use(`/auth`, authRouter);
-app.get('/sse', (req, res) => {
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
 
-
-
-    // Handle client disconnect
-    req.on('close', () => {
-
-        res.end();
-    });
-});
-
-const PORT = process.env.PORT || 5000;
+const PORT = 4001;
 const servers = ['http://localhost:3001', 'http://localhost:3002']; // Replace with your server URLs
 const calculationController = new CalculationController();
 

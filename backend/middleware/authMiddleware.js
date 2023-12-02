@@ -14,7 +14,7 @@ module.exports = function (req, res, next) {
             return res.status(403).json({ message: 'User not authorized, no token, no header' });
         }
 
-      /*  const token = authorizationHeader.split(' ')[1];*/
+        /*  const token = authorizationHeader.split(' ')[1];*/
         const token = authorizationHeader;
 
         /*const token = localStorage.getItem('token');*/

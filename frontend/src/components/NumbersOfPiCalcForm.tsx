@@ -1,69 +1,51 @@
 import React, {FC, useContext, useEffect, useState} from 'react';
-import { Context } from '../index';
-import { observer } from 'mobx-react-lite';
+import {Context} from '../index';
+import {observer} from 'mobx-react-lite';
 import './NumbersOfPiCalcForm.css';
 import CalcService from "../services/CalcService"; // Replace with the correct path to your CSS file
 
 const CalcPi: FC = () => {
     const [digits, setDigits] = useState<number>(0);
     const [result, setResult] = useState<string>('');
-    const { store } = useContext(Context);
-    const [progressUpdate, setProgressUpdate] = useState<string>('');
+    const {store} = useContext(Context);
+    const [progressUpdate, setProgressUpdate] = useState<number>(0);
+    // @ts-ignore
+    const [eventSource, setEventSource] = useState<EventSource>(null);
 
     useEffect(() => {
-        const eventSource = new EventSource('http://localhost:5000/sse');
+        if (eventSource) {
+            console.log(eventSource)
+            eventSource.addEventListener('progress', (e) => {
+                const data = JSON.parse(e.data);
+                setProgressUpdate(data.percents)
+                setResult(data.currentValue)
+                console.log(`Progress: ${data.calculationId} - ${data.percents}%`);
+            });
 
-        eventSource.addEventListener('message', (event) => {
-            const data = JSON.parse(event.data);
+            eventSource.addEventListener('complete', (e) => {
+                const data = JSON.parse(e.data);
 
-            switch (data.event) {
-                case 'progress':
-                    // Handle progress update
-                    const progressMessage = `Calculation ${data.calculationId}: ${data.percents}% complete`;
-                    console.log(progressMessage);
-                    setProgressUpdate("progressMessage");
-                    break;
+                setProgressUpdate(100);
+                console.log(data)
+                setResult(data.result)
+                eventSource.close()
+            });
 
-                case 'complete':
-                    // Handle completion update
-                    const resultMessage = `Calculation ${data.calculationId} completed. Result: ${data.result}`;
-                    console.log(resultMessage);
-                    setResult(resultMessage);
-                    break;
-
-                case 'error':
-                    // Handle error update
-                    const errorMessage = `Calculation ${data.calculationId} error: ${data.error}`;
-                    console.error(errorMessage);
-                    setResult(errorMessage);
-                    break;
-
-                default:
-                    console.warn('Unknown SSE message event:', data.event);
+            eventSource.onerror =()=> {
+                eventSource.close()
             }
-        });
 
-        eventSource.addEventListener('error', (error) => {
-            console.error('SSE Error:', error);
-        });
-
-        return () => {
-            eventSource.close();
-        };
-    }, []);
-    const calculatePi = async () => {
-        try {
-            const response = await CalcService.calculatePi(digits);
-            const newCalculation = response.data; // Access the response data directly
-            console.log('Calculation received from the backend:', newCalculation);
-            const text = JSON.parse(newCalculation)
-
-
-            // Display the result in your frontend
-            setResult("i love rats"); // Assuming 'content' is the property you want to display
-        } catch (error) {
-            console.error('Error fetching calculation history:', error);
+            return () => {
+                eventSource.close();
+            };
         }
+    }, [eventSource]);
+    const calculatePi = async () => {
+        if (eventSource) {
+            eventSource.close();
+        }
+        const newEventSource = new EventSource(`http://localhost:4001/auth/calculatePi?numberOfDigits=${digits}`);
+        setEventSource(newEventSource);
     };
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -92,11 +74,10 @@ const CalcPi: FC = () => {
                 <div className="progress-container">
                     <h3>Progress Update:</h3>
                     <p>{progressUpdate}</p>
-                    <p>{progressUpdate}</p>
                 </div>
             )}
-            {result && (
-                <div className="result-container">
+            {(
+                <div >
                     <h3>Result:</h3>
                     <p>{result}</p>
                 </div>

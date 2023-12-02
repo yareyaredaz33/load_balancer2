@@ -1,5 +1,5 @@
 const { parentPort, workerData } = require('worker_threads');
-const { CalculationHistory } = require('../Models/CalculationHistory');
+const  CalculationHistory  = require('../Models/CalculationHistory');
 
 let cancelled = false;
 
@@ -41,13 +41,13 @@ function calculatePi(numberOfDigits) {
 
     // Skip the integer part
     piGenerator.next();
-    if(numberOfDigits>1000){
+    if (numberOfDigits > 1000) {
         numberOfDigits = 999;
     }
     for (let i = 0; i < numberOfDigits; i++) {
         if (cancelled) {
             const duration = Date.now() - startTime; // duration cancellation
-            return { content: null, id: null, duration };
+            return {content: null, id: null, duration};
         }
 
         pi += piGenerator.next().value;
@@ -56,31 +56,17 @@ function calculatePi(numberOfDigits) {
         const progress = (i / numberOfDigits) * 100;
 
         // Notify progress to the caller
-        parentPort.postMessage({ type: 'progress', index: i, value: pi, percents: progress });
+        parentPort.postMessage({type: 'progress', index: i, value: pi, percents: progress});
         sleep(100);
     }
 
     const duration = Date.now() - startTime;
 
-    parentPort.postMessage({ type: 'result', value: pi.toString(), duration });
+
+    parentPort.postMessage({type: 'result', value: pi.toString(), duration});
 }
 
 const { result, duration } = calculatePi(workerData.numberOfDigits);
+console.log(result)
 
-if (result !== null) {
-    // Save the calculation history to the database
-    const userId = 5; // Replace with the actual user ID
-    CalculationHistory.create({
-        result: result,
-        time: duration,
-        isFinished: true,
-        user_id: userId,
-    });
-
-    // Send the result back
-    parentPort.postMessage({ content: result });
-} else {
-    // Handle cancellation
-    parentPort.postMessage({ content: null, duration });
-}
 module.exports = calculatePi;
