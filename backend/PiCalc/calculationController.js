@@ -7,7 +7,9 @@ class CalculationController {
     constructor() {
         this.calculationService = new CalculationService();
         this.calculatePi = this.calculatePi.bind(this);
+        this.cancelCalculation = this.cancelCalculation.bind(this);
         console.log('CalculationService instantiated:', this.calculationService);
+
     }
 
     calculatePi(req, res) {
@@ -26,6 +28,7 @@ class CalculationController {
                 console.log(progressData);
 
                 res.write(`event: progress\ndata: ${JSON.stringify({
+                    
                     calculationId: progressData.id,
                     percents: progressData.percents,
                     currentValue: progressData.value,
@@ -33,7 +36,7 @@ class CalculationController {
             });
 
             result.then(async (result) => {
-                console.log
+
                 console.log(`Calculation ${result.id} completed. Result: ${result.value}`);
 
 
@@ -79,6 +82,24 @@ class CalculationController {
         } catch (error) {
             console.error('Error fetching calculation history:', error);
             res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+    async cancelCalculation(req, res) {
+        try {
+            // Extract the calculationId from the request parameters or body
+            let isCancelled = false;
+
+            // Assuming CalculationService has a method to cancel calculations
+            isCancelled = this.calculationService.cancelCalculation();
+
+            if (isCancelled) {
+                return res.status(200).json({ message: 'Calculation cancelled successfully.' });
+            } else {
+                return res.status(404).json({ error: 'Calculation not found or already completed.' });
+            }
+        } catch (error) {
+            console.error('Error cancelling calculation:', error);
+            return res.status(500).json({ error: 'Internal Server Error, cant cancel' });
         }
     }
 }

@@ -6,6 +6,7 @@ class CalculationService {
         this.workers = new Map();
         this.currentId = 0;
         this.maxWorkers = 3;
+        this.calculatePi = this.calculatePi.bind(this);
     }
 
     calculatePi(numberOfDigits, onProgress) {
@@ -22,7 +23,11 @@ class CalculationService {
 
             worker.on('message', (message) => {
                 if (message.type === 'progress') {
-                    onProgress({ ...message, id });
+                    onProgress({...message, id});
+                }else if (message === 'cancel') {
+
+                    this.cleanUpWorker(id);
+                    reject(new Error('Calculation cancelled by user.'));
                 } else if (message.type === 'result') {
                     resolve({ ...message, id });
                     this.cleanUpWorker(id);
@@ -35,6 +40,7 @@ class CalculationService {
                 reject();
             });
 
+
             worker.on('exit', (code) => {
                 this.workers.delete(id);
                 if (code !== 0) reject(new Error(`Worker stopped with exit code ${code}`));
@@ -42,12 +48,13 @@ class CalculationService {
         });
     }
 
-    cancelCalculation(id) {
-        const worker = this.workers.get(id);
+    cancelCalculation() {
+        const worker = this.workers.get(this.currentId);
         if (worker) {
             worker.postMessage('cancel');
-            this.cleanUpWorker(id);
+            return true;
         }
+        return false;
     }
 
     cleanUpWorker(id) {

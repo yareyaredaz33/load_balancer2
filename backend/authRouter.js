@@ -30,5 +30,6 @@ try {
     console.error('Error:', error.message);
 }
 router.get('/calculationHistory', calcController.getHistory)
+router.post('/cancelCalculation', calcController.cancelCalculation)
 
 module.exports = router
