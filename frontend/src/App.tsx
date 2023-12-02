@@ -51,7 +51,7 @@ const App: FC = () => {
         <div className="container">
             <Navbar/>
             <div className="container">
-                <h1>{`WELCOME LIL ${localStorage.getItem('username')} :3`}</h1>
+                <h1 className="rainbow-text">{`WELCOME LIL ${localStorage.getItem('username')} :3`}</h1>
 
 
             </div>

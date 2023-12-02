@@ -2,9 +2,11 @@
 
 .input-container {
     margin-bottom: 15px;
+    background-color: #f5f5f8;
 }
 
 .input-container input {
+
     width: 100%;
     padding: 12px;
     box-sizing: border-box;
@@ -13,6 +15,7 @@
     border-radius: 5px;
     outline: none;
     transition: border-color 0.3s;
+
 }
 
 .input-container input:focus {

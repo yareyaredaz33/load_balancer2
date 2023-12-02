@@ -1,35 +1,35 @@
-import React, { FC, useContext, useState } from 'react';
-import { Context } from '../index';
+import React, { FC } from 'react';
 import { observer } from 'mobx-react-lite';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import logo from '../pic/logo.png';
+import './Navbar.css'; // Create a CSS file for Navbar styling
+
 const Navbar: FC = () => {
-
     return (
-        <nav className ="navbar navbar-expand-lg navbar-light bg-light">
-            <a className="navbar-brand" href="#">
-                <img src={logo} alt="Your Logo" width="40" height="40" className="d-inline-block " />
-                CalcPi Now
-            </a>
-            <button className ="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span className ="navbar-toggler-icon"></span>
-            </button>
-            <div className ="collapse navbar-collapse" id="navbarNav">
-                <ul className ="navbar-nav mr-auto">
-                    <li className ="nav-item active">
-                        <a className ="nav-link" href="#">Home <span className ="sr-only">(current)</span></a>
+        <nav className="navbar">
+            <div className="navbar-brand">
+                <img src={logo} alt="Your Logo" width="40" height="40" className="logo" />
+                <span className="brand-name">CalcPi Now</span>
+            </div>
+            <div className="navbar-links">
+                <ul>
+                    <li>
+                        <a href="#" className="nav-link">
+                            Home
+                        </a>
                     </li>
-                    <li className ="nav-item">
-                        <a className ="nav-link" href="#">Current task</a>
+                    <li>
+                        <a href="#" className="nav-link">
+                            Current task
+                        </a>
                     </li>
-                    <li className ="nav-item">
-                        <a className ="nav-link" href="#">History</a>
+                    <li>
+                        <a href="#" className="nav-link">
+                            History
+                        </a>
                     </li>
-
                 </ul>
             </div>
         </nav>
-
     );
 };
 

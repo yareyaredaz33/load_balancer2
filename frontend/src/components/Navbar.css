@@ -1,0 +1,46 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f5f5f8; /* Light gray background */
+    padding: 10px 20px; /* Adjust padding as needed */
+    border: 1px solid #c3b9c9; /* Gray border at the bottom */
+    border-radius: 5px;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    margin-right: 10px; /* Adjust margin as needed */
+}
+
+.brand-name {
+    font-size: 1.5rem;
+    color: #735987; /* Dark text color */
+}
+
+.navbar-links ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.navbar-links li {
+    margin-right: 15px; /* Adjust margin between links */
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #343a40; /* Dark link color */
+    font-weight: bold;
+    font-size: 1rem;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: #735987; /* Blue link color on hover */
+}

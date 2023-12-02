@@ -6,6 +6,7 @@
     border: 1px solid #ccc;
     border-radius: 15px; /* Make it more rounded */
     padding: 20px;
+    background-color: #f5f5f8;
 }
 
 .history-container h2 {
@@ -24,6 +25,7 @@
     border: 1px solid #ccc;
     border-radius: 15px; /* Make it more rounded */
     transition: background-color 0.3s;
+    background-color: #ffffff;
 }
 
 .history-container li:hover {
@@ -43,12 +45,14 @@
 .update-button {
     background-color: #735987; /* Purple color */
     color: white;
+
     padding: 10px 15px; /* Adjust padding as needed */
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-bottom: 10px; /* Add margin to separate the button from the list */
+    margin: 20px auto;  /* Add margin to separate the button from the list */
+    display: block;
 }
 
 .update-button:hover {

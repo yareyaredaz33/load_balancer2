@@ -41,3 +41,31 @@ h1 {
     margin-bottom: 5px;
     border-radius: 5px;
 }
+@keyframes rainbow {
+    0% {
+        color: #932727; /* Red */
+    }
+    16% {
+        color: #966d24; /* Orange */
+    }
+    33% {
+        color: #a4a41b; /* Yellow */
+    }
+    50% {
+        color: #1b9a1b; /* Green */
+    }
+    66% {
+        color: #202080; /* Blue */
+    }
+    83% {
+        color: #5f2386; /* Purple */
+    }
+    100% {
+        color: #7c1a1a; /* Red */
+    }
+}
+
+.rainbow-text {
+
+    animation: rainbow 4s linear infinite;
+}
